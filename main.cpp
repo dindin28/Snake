@@ -26,7 +26,7 @@ void showGF(char *ptrhead, int size){
 }
 void clearGF(char *ptrhead, int size){
     for(char *ptrbuff = ptrhead; ptrbuff != (ptrhead + size * size); ptrbuff++){
-        *ptrbuff = NULL;
+        *ptrbuff = ' ';
     }
 }
 int main(){
