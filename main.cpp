@@ -39,15 +39,6 @@ int main(){
     head.x = 0;
     head.y = 0;
     node tail = head;
-    int prev;
-    while(1){
-        cout << GetKeyState(VK_SHIFT);
-
-    }
-    /*int j = 2, i = 4;
-    *(GF + j * size + i) = 'O';*/
-    int movement = 77;
-
     showGF(GF, size);
     cout << "\n";
     getch();
