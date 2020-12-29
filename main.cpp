@@ -39,6 +39,7 @@ int main(){
     head.x = 0;
     head.y = 0;
     node tail = head;
+    123;
     showGF(GF, size);
     cout << "\n";
     getch();
