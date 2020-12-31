@@ -1,13 +1,15 @@
 #include <iostream>
+#include <stdlib.h>
 #include <conio.h>
 #include <time.h>
 #include <windows.h>
 using namespace std;
 
-typedef struct node{
+struct node{
     int x, y;
-    struct node *next = nullptr;
-} node;
+    struct node *next = NULL;
+};
+
 
 inline void showGF(char *ptrhead, int size){
     for(int i = 0; i < size + 2; i++){
@@ -26,9 +28,9 @@ inline void showGF(char *ptrhead, int size){
         cout << "-";
     }
 }
-inline void clearGF(char *ptrhead, int size){
-    for(char *ptrbuff = ptrhead; ptrbuff != (ptrhead + size * size); ptrbuff++){
-        *ptrbuff = ' ';
+void clearGF(char *ptrhead, int size){
+    for(char *iter = ptrhead; iter != (ptrhead + size * size); iter++){
+        *iter = ' ';
     }
 }
 
@@ -50,7 +52,12 @@ inline int checkPressedButtons(){
         return 4;
     }else return 0;
 }
-node* moveSnake(node *head, char* GF,int size,int movement){
+inline bool checkBorder(int size, int x, int y){
+    if(x < 0 || x >= size || y < 0 || y >= size) return false;
+    return true;
+}
+
+node* moveSnake(node *head, char* GF, int size, int movement){
     int x = head->x;
     int y = head->y;
     switch(movement) {
@@ -71,35 +78,67 @@ node* moveSnake(node *head, char* GF,int size,int movement){
             break;
         }
     }
-    if(head->next == NULL){
-        *(GF + head->y * size + head->x) = ' ';
-        head->x = x;
-        head->y = y;
-        cout << "head->x = " << head->x << "head->y = " << head->y << "\n";
-        *(GF + head->y * size + head->x) = 'O';
+    if(checkBorder(size, x, y)){
+        if(head->next == NULL){
+            *(GF + head->y * size + head->x) = ' ';
+            head->x = x;
+            head->y = y;
+            //cout << "head->x = "<< head->x << " head->y = "<<head->y << endl;
+            *(GF + head->y * size + head->x) = 'O';
+        }
+    }else{
+        showGF(GF, size);
+        cout << "\nGame is over\n";
+        system("pause");
+        exit(0);
     }
     return head;
 }
+void spawnFood(char *GF, int size, node *head){
+    int sizeOfSnake;
+    node *tempSnake = head;
+    for(sizeOfSnake = 0; tempSnake != NULL; sizeOfSnake++){tempSnake = tempSnake->next;}
+    int *Xs = (int*)malloc(size * size - sizeOfSnake);
+    int *Ys = (int*)malloc(size * size - sizeOfSnake);
+    int *Xstemp = Xs;
+    int *Ystemp = Ys;
+    for(int i = size - 1; i >= 0; i--){
+        for(int j = 0; j < size; j++){
+            if(head->x != i || head->y != j){
+                //cout << i << " "<< j << endl;
+                *Xstemp = i;
+                Xstemp++;
+                *Ystemp = j;
+                Ystemp++;
+            }
+        }
+    }
+    int temp = rand() % (size * size - sizeOfSnake);
+    cout << temp;
+    *(GF + size * (*(Xs + temp)) + *(Ys + temp)) = 'X';
+}
 
 int main(){
+    srand(time(NULL));
     clock_t start_t, end_t;
     system("title Snake");
-    int size = 3;
-    cout << "Enter size of Gaming Field: ";
-    //cin >> size;
-    char *GF = new char(size*size);
+    int size = 2;
+    char *GF = (char *) malloc(size*size);
     clearGF(GF, size);
-    node* head = (node*) malloc(sizeof(node));
+    node *head = (node*)malloc (sizeof(node));
     head->x = 0;
     head->y = size - 1;
     head->next = nullptr;
+    *(GF + head->y * size + head->x) = 'O';
+    spawnFood(GF, size, head);
+    //system("pause");
     int movement = 2;// at the beginning move right
     int buff = checkPressedButtons();
-        if(buff) movement = buff;
+    if(buff) movement = buff;
     showGF(GF, size);
     start_t = clock();
     while(1){
-        if(clock() - start_t > 2000){
+        if(clock() - start_t > 1000){
             system("cls");
             head = moveSnake(head, GF, size, movement);
             showGF(GF, size);
@@ -116,8 +155,4 @@ int main(){
      * Left-arrow => return 4
      * else return 0
      */
-    cout << endl;
-    cout << "\n" << (clock() - start_t);
-
-    getch();
 }
