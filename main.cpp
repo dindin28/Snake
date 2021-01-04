@@ -1,158 +1,130 @@
 #include <iostream>
-#include <stdlib.h>
-#include <conio.h>
-#include <time.h>
 #include <windows.h>
+#include <time.h>
+#include <conio.h>
+
 using namespace std;
 
-struct node{
+struct node {
     int x, y;
-    struct node *next = NULL;
+    node* next = NULL;
+    node* prev = NULL;
 };
 
-
-inline void showGF(char *ptrhead, int size){
-    for(int i = 0; i < size + 2; i++){
-        cout << "-";
-    }
-    cout << endl;
-    char *ptrbuff = ptrhead;
-    for(int i = 0; i < size; i++){
-        cout << "|";
-        for(int j = 0; j < size; j++, ptrbuff++){
-            cout << *ptrbuff;
+void clearGF(char *GF, int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            *(GF + (i * size) + j) = ' ';
         }
-        cout << "|" << endl;
-    }
-    for(int i = 0; i < size + 2; i++){
-        cout << "-";
-    }
-}
-void clearGF(char *ptrhead, int size){
-    for(char *iter = ptrhead; iter != (ptrhead + size * size); iter++){
-        *iter = ' ';
     }
 }
 
-inline int checkPressedButtons(){
+void showGF(char *GF, int size) {
+    for (int i = 0; i < size + 2; i++) cout << "-";
+    cout << endl;
+    for (int i = 0; i < size; i++) {
+        cout << "|";
+        for (int j = 0; j < size; j++) {
+            cout << *(GF + i * size + j);
+        }
+        cout << "|\n";
+    }
+    for (int i = 0; i < size + 2; i++) cout << "-";
+    cout << endl;
+}
+
+// make prev pointer
+node* createSnake(char *GF, int size) {
+    node* head = new node;
+    head->x = size / 2;
+    head->y = size / 2;
+    node* iteratorBuffer = head;
+    node* iterator;
+    int sizeOfSnake = 5;
+    for (int i = 1; i < sizeOfSnake; i++) {
+        iterator = new node;
+        iterator->x = head->x;
+        iterator->y = size / 2 + i;
+        iteratorBuffer->next = iterator;
+        iteratorBuffer = iterator;
+    }
+    iterator = head;
+    while (iterator) {
+        *(GF + size * iterator->y + iterator->x) = 'o';
+        iterator = iterator->next;
+    }
+    *(GF + size * head->y + head->x) = 'O';
+    return head;
+}
+
+int checkPressedButton(){
     /*
-     * Up-arrow => return 1
-     * Right-arrow => return 2
-     * Down-arrow => return 3
-     * Left-arrow => return 4
-     * else return 0
-     */
-    if(GetKeyState(VK_UP) == -127 || GetKeyState(VK_UP) == -128){
+    * Up-arrow => return 1
+    * Right-arrow => return 2
+    * Down-arrow => return 3
+    * Left-arrow => return 4
+    * else return 0
+    */ 
+    if(GetKeyState(VK_UP) == -127 || GetKeyState(VK_UP) == -128) {
         return 1;
-    }else if(GetKeyState(VK_RIGHT) == -127 || GetKeyState(VK_RIGHT) == -128){
-        return 2;
-    }else if(GetKeyState(VK_DOWN) == -127 || GetKeyState(VK_DOWN) == -128){
-        return 3;
-    }else if(GetKeyState(VK_LEFT) == -127 || GetKeyState(VK_LEFT) == -128){
-        return 4;
+    }else if (GetKeyState(VK_RIGHT) == -127 || GetKeyState(VK_RIGHT) == -128) {
+       return 2;
+    }else if (GetKeyState(VK_DOWN) == -127 || GetKeyState(VK_DOWN) == -128) {
+       return 3;
+    }else if (GetKeyState(VK_LEFT) == -127 || GetKeyState(VK_LEFT) == -128) {
+       return 4;
     }else return 0;
 }
-inline bool checkBorder(int size, int x, int y){
-    if(x < 0 || x >= size || y < 0 || y >= size) return false;
-    return true;
-}
 
-node* moveSnake(node *head, char* GF, int size, int movement){
-    int x = head->x;
-    int y = head->y;
-    switch(movement) {
-        case (1): {
+node* moveSnake(char* GF, int size, node *head, int movement) {
+    int x = head->x, y = head->y;
+    *(GF + head->y * size + head->x) = 'o';
+    switch (movement) {
+        case(1): {
             y--;
             break;
         }
-        case (2): {
+        case(2): {
             x++;
             break;
         }
-        case (3): {
+        case(3): {
             y++;
             break;
         }
-        case (4): {
+        case(4): {
             x--;
             break;
         }
     }
-    if(checkBorder(size, x, y)){
-        if(head->next == NULL){
-            *(GF + head->y * size + head->x) = ' ';
-            head->x = x;
-            head->y = y;
-            //cout << "head->x = "<< head->x << " head->y = "<<head->y << endl;
-            *(GF + head->y * size + head->x) = 'O';
-        }
-    }else{
-        showGF(GF, size);
-        cout << "\nGame is over\n";
-        system("pause");
-        exit(0);
-    }
-    return head;
-}
-void spawnFood(char *GF, int size, node *head){
-    int sizeOfSnake;
-    node *tempSnake = head;
-    for(sizeOfSnake = 0; tempSnake != NULL; sizeOfSnake++){tempSnake = tempSnake->next;}
-    int *Xs = (int*)malloc(size * size - sizeOfSnake);
-    int *Ys = (int*)malloc(size * size - sizeOfSnake);
-    int *Xstemp = Xs;
-    int *Ystemp = Ys;
-    for(int i = size - 1; i >= 0; i--){
-        for(int j = 0; j < size; j++){
-            if(head->x != i || head->y != j){
-                //cout << i << " "<< j << endl;
-                *Xstemp = i;
-                Xstemp++;
-                *Ystemp = j;
-                Ystemp++;
-            }
-        }
-    }
-    int temp = rand() % (size * size - sizeOfSnake);
-    cout << temp;
-    *(GF + size * (*(Xs + temp)) + *(Ys + temp)) = 'X';
+    node* iterator = head;
+    while (iterator->next) iterator = iterator->next;
+    *(GF + iterator->y * size + iterator->x) = ' ';
+    iterator->x = x; iterator->y = y;
+    
 }
 
-int main(){
-    srand(time(NULL));
-    clock_t start_t, end_t;
+int main()
+{
+    clock_t start_t;
     system("title Snake");
-    int size = 2;
-    char *GF = (char *) malloc(size*size);
-    clearGF(GF, size);
-    node *head = (node*)malloc (sizeof(node));
-    head->x = 0;
-    head->y = size - 1;
-    head->next = nullptr;
-    *(GF + head->y * size + head->x) = 'O';
-    spawnFood(GF, size, head);
-    //system("pause");
-    int movement = 2;// at the beginning move right
-    int buff = checkPressedButtons();
-    if(buff) movement = buff;
-    showGF(GF, size);
+    const int size = 30;
+    char GF[size][size];
+    clearGF(&GF[0][0], size);
+    node* head = createSnake(&GF[0][0], size);
+    showGF(&GF[0][0], size);
+    int movement = 1;
+    int buffer = checkPressedButton();
+    if (buffer) movement = buffer;
     start_t = clock();
-    while(1){
-        if(clock() - start_t > 1000){
+    while (1) {
+        if (clock() - start_t > 2000) {
             system("cls");
-            head = moveSnake(head, GF, size, movement);
-            showGF(GF, size);
+
             start_t = clock();
         }
-        buff = checkPressedButtons();
-        if(buff) movement = buff;
-        if(GetKeyState(VK_ESCAPE) == -127 || GetKeyState(VK_ESCAPE) == -128) return 0;
+        buffer = checkPressedButton();
+        if (buffer) movement = buffer;
     }
-    /*
-     * Up-arrow => return 1
-     * Right-arrow => return 2
-     * Down-arrow => return 3
-     * Left-arrow => return 4
-     * else return 0
-     */
+    _getch();
 }
