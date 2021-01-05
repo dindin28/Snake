@@ -1,4 +1,0 @@
-C:\Users\TENK\Desktop\Project1\Debug\Project1.exe
-C:\Users\TENK\Desktop\Project1\Debug\Project1.pdb
-C:\Users\TENK\Desktop\Snake\Debug\Snake.exe
-C:\Users\TENK\Desktop\Snake\Debug\Snake.pdb
