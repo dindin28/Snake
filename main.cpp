@@ -1,7 +1,6 @@
 #include <iostream>
 #include <windows.h>
 #include <time.h>
-#include <conio.h>
 
 using namespace std;
 
@@ -217,5 +216,4 @@ int main()
             delay = 1000 - calcSizeOfSnake(head) * 50;
         }
     }
-    _getch();
 }
