@@ -3,6 +3,7 @@
 #include <time.h>
 
 using namespace std;
+int prevMovement;
 
 struct node {
     int x, y;
@@ -151,6 +152,7 @@ node* moveSnake(char* GF, int size, node *head, int movement) {
             break;
         }
     }
+    prevMovement = movement;
     switch (checkBorders(GF, size, x, y)) {
         case(0): {
             showGF(GF, size);
@@ -198,20 +200,24 @@ int main()
     int movement = 1;
     int buffer = checkPressedButton();
     int delay = 1000;
-    if (buffer)
+    if (buffer) {
         movement = buffer;
+        prevMovement = movement;
+    }
     start_t = clock();
     while (1) {
         if (clock() - start_t > delay) {
             system("cls");
             head = moveSnake(&GF[0][0], size, head, movement);
             showGF(&GF[0][0], size);
+            cout << prevMovement << " " << buffer;
             start_t = clock();
         }
 
         buffer = checkPressedButton();
-        if (buffer)
+        if (buffer == 1 && prevMovement != 3 || buffer == 2 && prevMovement != 4 || buffer == 3 && prevMovement != 1 || buffer == 4 && prevMovement != 2){
             movement = buffer;
+        }
         if (calcSizeOfSnake(head) < 16) {
             delay = 1000 - calcSizeOfSnake(head) * 50;
         }
