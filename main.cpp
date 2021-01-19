@@ -41,12 +41,12 @@ void showGF(char *GF, int size) {
         cout << "|\n";
     }
     for (int i = 0; i < size + 2; i++) cout << "-";
-    cout << endl << "Score: " << calcSizeOfSnake(head) << endl;
+    cout << endl;
 }
 
 node* createSnake(char *GF, int size) {
     node* head = new node;
-    const int sizeOfSnake = 2;
+    const int sizeOfSnake = 4;
     node* temp;
     for (int i = 0; i < sizeOfSnake - 1; i++) {
         temp = new node;
@@ -73,34 +73,40 @@ node* createSnake(char *GF, int size) {
     *(GF + head->y * size + head->x) = 'O';
     return head;
 }
+struct point {
+    int x, y;
+};
 
 void spawnFood(char* GF, int size) {
-    char* temp;
-    int counter = 0;
-    for (temp = GF; temp != GF + size * size; temp++) {
-        if (*temp != 'o' && *temp != 'O')
-            counter++;
-    }
-    int* freeCoord = new int[2 * counter];
-    int* tempCoord = freeCoord;
+    int sizeOfSnake = 0;
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            if (*(GF + size * i + j) != 'o' && *(GF + size * i + j) != 'O') {
-                *tempCoord = j; *(tempCoord + 1) = i;
-                tempCoord += 2;
+            if (*(GF + i * size + j) == 'o' || *(GF + i * size + j) == 'O')
+                sizeOfSnake++;
+        }
+    }
+    if (sizeOfSnake == size * size) {
+        showGF(GF, size);
+        cout << "You win!!!" << endl;
+        system("pause");
+        exit(0);
+    }
+    int counter = 0;
+    point* ptr = new point[size * size - sizeOfSnake];
+    for (int i = 0; i < size ; i++) {
+        for (int j = 0; j < size; j++) {
+            if (*(GF + i * size + j) != 'o' && *(GF + i * size + j) != 'O') {
+                ptr[counter].x = j; ptr[counter].y = i;
+                counter++;
             }
         }
     }
-
-    /*for (tempCoord = freeCoord; tempCoord != freeCoord + 2 * counter;) {
-        cout << *tempCoord << " " << *(tempCoord + 1) << endl;
-        tempCoord += 2;
-    }
-    cout << counter;*/
-
-    int buffer = rand() % counter;
-    //cout << *(freeCoord + buffer) << " " << *(freeCoord + buffer + 1) << endl;
-    *(GF + size * (*(freeCoord + buffer)) + *(freeCoord + buffer + 1)) = 'X';
+    /*cout << "size = " << sizeOfSnake << endl;
+    for (int counter = 0; counter < size * size - sizeOfSnake; counter++) {
+        cout << ptr[counter].x << " " << ptr[counter].y << endl;
+    }*/
+    int randBuff = rand() % (size * size - sizeOfSnake);
+    *(GF + ptr[randBuff].y * size + ptr[randBuff].x) = 'X';
 }
 
 int checkPressedButton(){
@@ -197,6 +203,7 @@ int main()
     head = createSnake(&GF[0][0], size);
     spawnFood(&GF[0][0], size);
     showGF(&GF[0][0], size);
+    cout << endl << "Score: " << calcSizeOfSnake(head) << endl;
     int movement = 1;
     int buffer = checkPressedButton();
     int delay = 1000;
@@ -210,7 +217,7 @@ int main()
             system("cls");
             head = moveSnake(&GF[0][0], size, head, movement);
             showGF(&GF[0][0], size);
-            cout << prevMovement << " " << buffer;
+            cout << endl << "Score: " << calcSizeOfSnake(head) << endl;
             start_t = clock();
         }
 
