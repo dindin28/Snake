@@ -2,6 +2,7 @@
 #include <iostream>
 #include <windows.h>
 #include <time.h>
+#include <string>
 
 int prevMovement;
 const int sizeGF = 10;
@@ -49,10 +50,19 @@ void showGF(char *GF, int size) {
 
 }
 
-void showGF(sf::RenderWindow &window, char* GF, int size) {
+void showGF(sf::RenderWindow &window, sf::Text &text, char* GF, int size) {
+    int sizeOfSnake = 0;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (*(GF + i * size + j) == 'o' || *(GF + i * size + j) == 'O')
+                sizeOfSnake++;
+        }
+    }
     //SFML Version
     //Making borders
     window.clear(sf::Color(255, 255, 255, 0));
+    text.setString("Score: " + std::to_string(sizeOfSnake));
+    window.draw(text);
     sf::RectangleShape rectangle(sf::Vector2f(borderThickness, borderThickness * 2 + (sizeGF - 1) + bodyRadius * sizeGF * 2));
     rectangle.setFillColor(sf::Color(0, 0, 0));
     window.draw(rectangle);
@@ -127,7 +137,7 @@ struct point {
     int x, y;
 };
 
-void spawnFood(sf::RenderWindow& window, char* GF, int size) {
+void spawnFood(sf::RenderWindow& window, sf::Text &text, char* GF, int size) {
     int sizeOfSnake = 0;
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
@@ -136,7 +146,7 @@ void spawnFood(sf::RenderWindow& window, char* GF, int size) {
         }
     }
     if (sizeOfSnake == size * size) {
-        showGF(window, GF, size);
+        showGF(window, text, GF, size);
         std::cout << "You win!!!" << std::endl;
         system("pause");
         exit(0);
@@ -188,7 +198,7 @@ int checkBorders(char* GF, int size, int x, int y) {
     else return 1;
 }
 
-node* moveSnake(sf::RenderWindow& window, char* GF, int size, node *head, int movement) {
+node* moveSnake(sf::RenderWindow& window, sf::Text& text, char* GF, int size, node *head, int movement) {
     int x = head->x, y = head->y;
     switch (movement) {
         case(1): {
@@ -211,8 +221,7 @@ node* moveSnake(sf::RenderWindow& window, char* GF, int size, node *head, int mo
     prevMovement = movement;
     switch (checkBorders(GF, size, x, y)) {
         case(0): {
-            showGF(window, GF, size);
-            std::cout << "Game over" << std::endl;
+            showGF(window, text, GF, size);
             system("pause");
             exit(0);
         }
@@ -236,7 +245,7 @@ node* moveSnake(sf::RenderWindow& window, char* GF, int size, node *head, int mo
             head->prev = temp;
             temp->x = x; temp->y = y;
             *(GF + temp->y * size + temp->x) = 'O';
-            spawnFood(window, GF, size);
+            spawnFood(window, text, GF, size);
             return temp;
         }
     }
@@ -244,10 +253,18 @@ node* moveSnake(sf::RenderWindow& window, char* GF, int size, node *head, int mo
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode((borderThickness, borderThickness * 2 + (sizeGF - 1) + bodyRadius * sizeGF * 2), (borderThickness, borderThickness * 2 + (sizeGF - 1) + bodyRadius * sizeGF * 2)), "Snake");
+    std::string String;
+    sf::RenderWindow window(sf::VideoMode((borderThickness, borderThickness * 2 + (sizeGF - 1) + bodyRadius * sizeGF * 2)+50, (borderThickness, borderThickness * 2 + (sizeGF - 1) + bodyRadius * sizeGF * 2)+ 50), "Snake");
     //sf::RenderWindow window(sf::VideoMode(1000, 1000), "Snake");
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
+    sf::Font font;
+    font.loadFromFile("arial.ttf");
+    sf::Text text("", font);
+    text.setCharacterSize(30);
+    text.setStyle(sf::Text::Bold);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(10, (borderThickness, borderThickness * 2 + (sizeGF - 1) + bodyRadius * sizeGF * 2) + 2);
     window.clear(sf::Color(255, 255, 255, 0));
     srand(time(NULL));
     clock_t start_t;
@@ -256,8 +273,8 @@ int main()
     char GF[size][size];
     clearGF(&GF[0][0], size);
     head = createSnake(&GF[0][0], size);
-    spawnFood(window, &GF[0][0], size);
-    showGF(window, &GF[0][0], size);
+    spawnFood(window, text, &GF[0][0], size);
+    showGF(window, text, &GF[0][0], size);
     std::cout << std::endl << "Score: " << calcSizeOfSnake(head) << std::endl;
     int movement = 1;
     int buffer = checkPressedButton();
@@ -300,9 +317,9 @@ int main()
 
         if (clock() - start_t > delay) {
             system("cls");
-            head = moveSnake(window, &GF[0][0], size, head, movement);
-            showGF(window, &GF[0][0], size);
-            std::cout << std::endl << "Score: " << calcSizeOfSnake(head) << std::endl;
+            head = moveSnake(window, text, &GF[0][0], size, head, movement);
+            showGF(window, text, &GF[0][0], size);
+            //std::cout << std::endl << "Score: " << calcSizeOfSnake(head) << std::endl;
             start_t = clock();
         }
 

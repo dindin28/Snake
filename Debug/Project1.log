@@ -1,14 +1,16 @@
 ﻿  main.cpp
-C:\Users\TENK\Desktop\Snake\main.cpp(60,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(63,124): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(63,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(66,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(72,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(75,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(85,121): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(85,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(89,121): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(89,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(252,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\TENK\Desktop\Snake\main.cpp(243): warning C4715: 'moveSnake': not all control paths return a value
+C:\Users\TENK\Desktop\Snake\main.cpp(70,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(73,124): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(73,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(76,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(82,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(85,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(95,121): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(95,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(99,121): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(99,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(267,106): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(269,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\TENK\Desktop\Snake\main.cpp(252): warning C4715: 'moveSnake': not all control paths return a value
+  LINK : C:\Users\TENK\Desktop\Snake\Debug\Snake.exe not found or not built by the last incremental link; performing full link
   Project1.vcxproj -> C:\Users\TENK\Desktop\Snake\Debug\Snake.exe
